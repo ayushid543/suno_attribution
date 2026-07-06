@@ -34,16 +34,16 @@ def load_data():
     retention = pd.read_csv("data/retention_curve.csv", index_col="month")
     incr_raw = pd.read_csv("data/incrementality_test.csv", index_col=0).squeeze("columns")
     # CSV round-trip mixes numeric and boolean values, so pandas reads the
-    # whole Series as object/strings. Cast the numeric fields back to float
-    # explicitly (leave 'significant' as-is since it's just displayed as text).
-    incr = incr_raw.copy()
+    # whole Series as object/string dtype. On newer pandas (Arrow-backed
+    # string arrays), mutating individual entries to floats in place raises
+    # a TypeError, so build a fresh plain dict instead.
     numeric_fields = [
         "test_region_conv_rate", "holdout_region_conv_rate",
         "measured_incremental_lift", "z_score", "p_value",
         "naive_last_click_claimed_lift", "overstatement_factor",
     ]
-    for field in numeric_fields:
-        incr[field] = float(incr[field])
+    incr = {field: float(incr_raw[field]) for field in numeric_fields}
+    incr["significant"] = str(incr_raw["significant"])
     return last_click, time_decay, true_contrib, econ, retention, incr
 
 last_click, time_decay, true_contrib, econ, retention, incr = load_data()
