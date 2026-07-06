@@ -1,0 +1,9 @@
+,0
+test_region_conv_rate,0.0578
+holdout_region_conv_rate,0.0438
+measured_incremental_lift,0.319
+z_score,3.49
+p_value,0.00048
+significant,True
+naive_last_click_claimed_lift,1.9
+overstatement_factor,5.9
